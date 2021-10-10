@@ -2,14 +2,12 @@
 // Initialize the session
 session_start();
 
-// Si está logeado con una sesión donde se defina un DNI, es un paciente, de lo contrario es un usuario (empleado), por lo que cerramos su sesión
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && !empty($_SESSION["DNI"])){
-    header("location: autocita.php");
+/* Si ya está logeado con una sesión, redirigimos al inicio
+if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true){
+    header("location: inicio_pctes.php");
     exit;
-} else{
-    session_destroy();
-    session_start();
-}
+}*/
+
 // Include config file
 require_once "config/configuracion.php";
 

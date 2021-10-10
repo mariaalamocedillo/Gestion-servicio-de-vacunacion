@@ -71,6 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             if ($stmt->num_rows >= 2) {
                 $vacunacion_err = "Su vacunación ya se ha completado";
+                header("location: inicio_pctes.php");
             } else {
                 //sumamos uno al número de dosis que se le ha aplicado
                 $num_dosis = $stmt->num_rows + 1;
@@ -103,7 +104,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Attempt to execute the prepared statement
             if ($stmt->execute()) {
                 // Redirect to login page
-                header("location: cita_confirmada.php");
+                header("location: inicio_pctes.php");
             } else {
                 echo "Oops! Algo salió mal. Inténtelo de nuevo más tarde.";
             }
@@ -186,6 +187,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <option value="16">16:00 - 20:00</option>
                     </select>
                     <span class="invalid-feedback"><?php echo $rango_err; ?></span>
+                </div>
+
+                <div class="flex-sb-m w-full p-b-48">
+                    ¿Ya tienes cita?<a href="inicio_pctes.php">
+                        Consultar citas
+                    </a>
                 </div>
 
                 <div class="form-group text-center">

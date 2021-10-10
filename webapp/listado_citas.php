@@ -93,7 +93,7 @@ exit;
                                         echo "<td>";
                                             echo '<a href="read.php?id='. $row['id_cita'] .'" class="mr-3" title="Detalles" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="delete_cita.php?id='. $row['id_cita'] .'" class="mr-3" title="Anular" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            echo '<a href="confirmar_cita.php?id='. $row['id_cita'] .'" title="Completada" data-toggle="tooltip"><span class="fa fa-check-square"></span></a>';
+                                            echo '<a href="confirmar_vacunado.php?id='. $row['id_cita'] .'" title="Completada" data-toggle="tooltip"><span class="fa fa-check-square"></span></a>';
                                     echo "</td>";
                                     echo "</tr>";
                                 }
