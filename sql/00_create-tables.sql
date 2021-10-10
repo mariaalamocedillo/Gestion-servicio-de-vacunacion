@@ -39,7 +39,8 @@ CREATE TABLE citas (
     num_dosis INT(10) NOT NULL,
     centro_vacunacion VARCHAR(255) NOT NULL,
     fecha DATETIME NOT NULL,
-    FOREIGN KEY (DNI) REFERENCES pacientes(DNI)
+    FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
+    FOREIGN KEY (centro_vacunacion) REFERENCES centros(abreviatura)
 );
 
 -- Crear tabla con los registros de los vacunados
@@ -50,6 +51,14 @@ CREATE TABLE registro_vacunados (
     fabricante VARCHAR(255) NOT NULL,
     num_lote INT NOT NULL,
     centro_vacunacion VARCHAR(255) NOT NULL,
+    fecha_vacunacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (DNI) REFERENCES pacientes(DNI)
 );
 
+-- Crear tabla con las citas de vacunación
+CREATE TABLE centros (
+   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+   nombre VARCHAR(255) NOT NULL,
+   abreviatura VARCHAR(255) NOT NULL,
+   localidad VARCHAR(255) NOT NULL
+);

@@ -4,7 +4,7 @@ session_start();
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: listado_citas.php");
+    header("location: inicio.php");
     exit;
 }
 
@@ -65,7 +65,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $_SESSION["id"] = $fila["id"];
                         $_SESSION["num_identif"] = $fila["num_identif"];
                         // Redirect user to welcome page
-                        header("location: listado_citas.php");
+                        header("location: inicio.php");
                     }
                 }
             } else{
@@ -114,37 +114,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
-            <form class="login100-form validate-form flex-sb flex-w" action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
-					<span class="login100-form-title p-b-32">
-						Login
-					</span>
+            <form class="login100-form validate-form flex-sb flex-w"
+                  action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
 
-                <span class="p-b-11">
-						Código de empleado o colegiado
-					</span>
-                <div class="wrap-input100 validate-input m-b-36" data-validate = "Num_identif is required">
-                    <input type="text" id="input_num_id" name="num_identif" class="form-control" placeholder="Email address" required autofocus>
+                <img class="col-2 mb-4" src="css/SaludMadrid.svg" width=50>
+                <div class="col-8 m-auto">
+                    <span class="login100-form-title text-center">Login</span>
                 </div>
 
-                <span class=" p-b-11">
-						Contraseña
-					</span>
-                <div class="wrap-input100 validate-input m-b-12" data-validate = "Password is required">
-						<!--<span class="btn-show-pass">
-							<i class="fa fa-eye" id="togglePassword"></i>
-						</span>-->
-                    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
-                </div>
+                <span class="p-b-11 p-t-11">Código de empleado o colegiado </span>
+                    <input type="text" id="input_num_id" name="num_identif" class="form-control"
+                           placeholder="Email address" required autofocus>
+                <span class="p-b-11 p-t-11">Contraseña</span>
+                    <input type="password" id="inputPassword" name="password" class="form-control"
+                           placeholder="Password" required>
 
                 <div class="flex-sb-m w-full p-b-48">
-                    <div>
-                        <a href="registro.php">
-                            Crear una nueva cuenta
-                        </a>
                         <a href="reset-password.php">
                             Olvidé mi contraseña
                         </a>
-                    </div>
+                        <a href="registro.php" style="float: right">
+                            Crear una nueva cuenta
+                        </a>
                 </div>
 
                 <div class="container-login100-form-btn">

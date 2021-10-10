@@ -55,7 +55,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     //Validate range
     if (!strcmp(trim($_POST["rango"]), "vacio")) {
-        $rango_err = "Seleccione una opción.";
+        $rango_err = "Seleccione su puesto de trabajo.";
     } else {
         $rango = trim($_POST["rango"]);
     }
@@ -63,8 +63,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate employee number
     if(empty(trim($_POST["num_identif"]))){
         $num_identif_err = "Introduzca su número de empleado o de colegiado.";
-    } elseif (strlen(trim($_POST["num_identif"])) < 8) {
-        $name_err = "El número debe contener al menos 8 caracteres.";
+    } elseif (!is_numeric(trim($_POST["num_identif"]))){
+        $num_identif_err = "El código debe ser numérico.";
+    } elseif ( ($rango == "Informatico"|| $rango == "Gestor")
+                    && strlen(trim($_POST["num_identif"])) != 8) {
+        $num_identif_err = "El número de empleado debe contener 8 caracteres.";
+    } elseif ( $rango == "Sanitario" && strlen(trim($_POST["num_identif"])) != 9) {
+        $num_identif_err = "El número de colegiado debe contener 9 caracteres.";
     } else{
         $num_identif = trim($_POST["num_identif"]);
     }
@@ -148,7 +153,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class="lead col-md mt-3">Este registro está orientado a los empleados, tanto técnicos como sanitarios,
                 que se encargan de gestionar la vacunación en la Comunidad de Madrid. Si ha entrado
                 aquí por error para solicitar su cita de vacunación, dirígase al siguiente
-                <a href="autocita.php">enlace de Autocitas</a></div>
+                <a href="identificacion.php">enlace de Autocitas</a></div>
         </div>
     </div>
 
@@ -156,64 +161,63 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         <div class="col-md-12 order-md-1">
 
-    <form action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
+        <form action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="name">Nombre completo</label>
-                <input type="text" class="form-control" id="name" name="name"
-                       class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>"
-                       value="<?php echo $name; ?>">
-                <span class="invalid-feedback"><?php echo $name_err; ?></span>
-            </div>
-    
-            <div class="col-md-6 mb-3">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
-                <span class="invalid-feedback"><?php echo $email_err; ?></span>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md mb-3">
-                <label for="rango">Rango</label>
-                <select class="form-control <?php echo (!empty($rango_err)) ? 'is-invalid' : ''; ?>
-                                    custom-select d-block w-100" id="rango" name="rango" required="">
-                    <option value="vacio">Seleccione...</option>
-                    <option>Sanitario</option>
-                    <option>Gestor</option>
-                    <option>Informatico</option>
-                </select>
-                <span class="invalid-feedback"><?php echo $rango_err; ?></span>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name">Nombre completo</label>
+                    <input type="text" class="form-control" id="name" name="name"
+                           class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>"
+                           value="<?php echo $name; ?>">
+                    <span class="invalid-feedback"><?php echo $name_err; ?></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
+                    <span class="invalid-feedback"><?php echo $email_err; ?></span>
+                </div>
             </div>
 
-            <div class="col-md-9 mb-3">
-                <label>Número de identificación (introduzca su número de empleado o de colegiado, según su puesto de trabajo)</label>
-                <input type="text" name="num_identif" class="form-control <?php echo (!empty($num_identif_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $num_identif; ?>">
-                <span class="invalid-feedback"><?php echo $num_identif_err; ?></span>
+            <div class="row">
+                <div class="col-md mb-3">
+                    <label for="rango">Rango</label>
+                    <select class="form-control <?php echo (!empty($rango_err)) ? 'is-invalid' : ''; ?>
+                                        custom-select d-block w-100" id="rango" name="rango" required="">
+                        <option value="vacio">Seleccione...</option>
+                        <option>Sanitario</option>
+                        <option>Gestor</option>
+                        <option>Informatico</option>
+                    </select>
+                    <span class="invalid-feedback"><?php echo $rango_err; ?></span>
+                </div>
+
+                <div class="col-md-9 mb-3">
+                    <label>Número de identificación (introduzca su número de empleado o de colegiado, según su puesto de trabajo)</label>
+                    <input type="text" name="num_identif" class="form-control <?php echo (!empty($num_identif_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $num_identif; ?>">
+                    <span class="invalid-feedback"><?php echo $num_identif_err; ?></span>
+                </div>
+
             </div>
 
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="psswd">Contraseña</label>
-                <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
-                <span class="invalid-feedback"><?php echo $password_err; ?></span>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="psswd">Contraseña</label>
+                    <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
+                    <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="confirm_password">Confirmar contraseña</label>
+                    <input type="password" name="confirm_password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
+                    <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label>Confirmar contraseña</label>
-                <input type="password" name="confirm_password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
-                <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Crear cuenta">
+                <input type="reset" class="btn btn-primary ml-2" value="Vaciar formulario">
             </div>
-        </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Crear cuenta">
-            <input type="reset" class="btn btn-secondary ml-2" value="Vaciar formulario">
-        </div>
-        <p>¿Ya tiene una cuenta? <a href="login.php">Entre aquí</a>.</p>
-    </form>
-</div>
+            <p>¿Ya tiene una cuenta? <a href="login.php">Entre aquí</a>.</p>
+        </form>
+    </div>
 </body>
 </html>

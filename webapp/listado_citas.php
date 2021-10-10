@@ -20,7 +20,7 @@ exit;
     <script src="js/bootstrap.min.js"></script>
     <style>
         .wrapper{
-            width: 600px;
+            width: 900px;
             margin: 0 auto;
         }
         table tr td:last-child{
@@ -36,7 +36,7 @@ exit;
 <body>
 <!--barra de navegación-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-    <img class="d-block mx-auto mb-4 justify-content-center mt-1" src="css/SaludMadrid.svg" width="70">
+    <img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70">
 
     <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav mr-auto ml-3">
@@ -92,7 +92,8 @@ exit;
                                         echo "<td>" . $row['fecha'] . "</td>";
                                         echo "<td>";
                                             echo '<a href="read.php?id='. $row['id_cita'] .'" class="mr-3" title="Detalles" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="delete_cita.php?id='. $row['id_cita'] .'" title="Anular" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+                                            echo '<a href="delete_cita.php?id='. $row['id_cita'] .'" class="mr-3" title="Anular" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+                                            echo '<a href="confirmar_cita.php?id='. $row['id_cita'] .'" title="Completada" data-toggle="tooltip"><span class="fa fa-check-square"></span></a>';
                                     echo "</td>";
                                     echo "</tr>";
                                 }
