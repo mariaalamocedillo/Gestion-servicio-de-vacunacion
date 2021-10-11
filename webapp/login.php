@@ -118,8 +118,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                   action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
 
                 <img class="col-2 mb-4" src="css/SaludMadrid.svg" width=50>
-                <div class="col-8 m-auto">
-                    <span class="login100-form-title text-center">Login</span>
+                <div class="col-8 mb-4">
+                    <span class="login100-form-title text-center mb-3">Login</span>
+                    <span>Este portal es de uso exclusivo para sanitarios. Si desea acceder a la información
+                        sobre su vacunación, o desea solicitar una cita, acceda <a href="identificacion.php">aquí</a></span>
                 </div>
 
                 <span class="p-b-11 p-t-11">Código de empleado o colegiado </span>

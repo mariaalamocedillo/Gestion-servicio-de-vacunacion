@@ -2,11 +2,15 @@
 // Initialize the session
 session_start();
 
-/* Si ya está logeado con una sesión, redirigimos al inicio
-if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true){
+// Si ya está logeado con una sesión de paciente, redirigimos al inicio. Si es un empleado, cerramos sus sesión
+if(isset($_SESSION["DNI"])){
     header("location: inicio_pctes.php");
     exit;
-}*/
+} elseif (isset($_SESSION["num_identif"])){
+    session_unset();
+    session_destroy();
+    session_start();
+}
 
 // Include config file
 require_once "config/configuracion.php";
@@ -65,8 +69,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $_SESSION["loggedin"] = true;
                     $_SESSION["DNI"] = $fila["DNI"];
                     $_SESSION["nombre"] = $fila["nombre"];
-                    // Redirect user to cita page
-                    header("location: autocita.php");
+                    // Redirect user to inicio
+                    header("location: inicio_pctes.php");
                 } else{ //si no se encuentra, ponemos un mensaje de error (usamos el del DNI)
                     $vacunacion_err = "No encontramos sus datos en nuestra base de datos. Comunique este error a su centro de salud para subsanarlo";
                 }

@@ -7,6 +7,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+$centro_trab = "";
+//TODO que no recargue la página- solo cree una cookie + aplicarla
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!empty(trim($_POST["centro_trab"]))) {
+        $centro_trab = trim($_POST["centro_trab"]);
+        setcookie("centro_trab", $centro_trab, time() + (30 * 24 * 3600), "/");
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +25,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
     <title>Gestión vacunación COVID-19</title>
     <meta content="Página de inicio para los usuarios (sanitarios y otros empleados)" name="description">
+
 
     <!-- Favicons -->
     <link href="img/favicon.png" rel="icon">
@@ -35,6 +44,31 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
     <!-- Template Main CSS File -->
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/busqueda.css">
+
+    <script>
+        $(document).ready(function(){
+            $('.search-box input[type="text"]').on("keyup input", function(){
+                /* Get input value on change */
+                var inputVal = $(this).val();
+                var resultDropdown = $(this).siblings(".result");
+                if(inputVal.length){
+                    $.get("buscar-backend.php", {term: inputVal}).done(function(data){
+                        // Display the returned data in browser
+                        resultDropdown.html(data);
+                    });
+                } else{
+                    resultDropdown.empty();
+                }
+            });
+
+            // Set search input value on click of result item
+            $(document).on("click", ".result p", function(){
+                $(this).parents(".search-box").find('input[type="text"]').val($(this).text());
+                $(this).parent(".result").empty();
+            });
+        });
+    </script>
 </head>
 <body>
 <!-- Navigation bar -->
@@ -44,13 +78,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="logo">
             <a href="inicio.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70"></a>
         </div>
-
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a class="active" href="logout.php">Salir</a></li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
+        <div class="botones">
+            <a href="logout.php">Salir</a>
+        </div>
 
     </div>
 </header>
@@ -59,8 +89,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="hero-container">
         <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
 
-            <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
-
             <div class="carousel-inner" role="listbox">
                 <!-- Slide 1 -->
                 <div class="carousel-item active" style="background: url(img/slide/slide-1.jpg)">
@@ -68,6 +96,15 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="carousel-content">
                             <h2 class="animate__animated animate__fadeInDown">Bienvenido al portal de <br> gestión de <span>vacunación COVID-19</span></h2>
                             <p class="animate__animated animate__fadeInUp">Este portal está orientado a la gestión de las citas de vacunación contra el coronavirus. El uso de este portal es exclusivo para sanitarios. Podrán ver información de los suministros de las vacunasa, las citas de cada centro y el registro de los pacientes con el número de dosis que se les ha aplicado.</p>
+                            <p class="animate__animated animate__fadeInUp">Introduzca su centro de trabajo: </p>
+                            <form action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post" class=" animate__animated animate__fadeInUp">
+                                <div class="search-box">
+                                    <input class="form-control <?php echo (!empty($centro_trab)) ? 'is-invalid' : ''; ?>" name="centro_trab"
+                                           value="<?php echo $centro_trab; ?>" type="text" autocomplete="off" placeholder="Buscar centro..." />
+                                    <div class="result"></div>
+                                </div>
+                                <input type="submit" class="btn btn-primary btn-get-started" value="Confirmar">
+                            </form>
                         </div>
                     </div>
                 </div>

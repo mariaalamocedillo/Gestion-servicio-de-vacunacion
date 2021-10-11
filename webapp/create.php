@@ -1,7 +1,7 @@
 <?php
 // Include config file
 require_once "config/configuracion.php";
- 
+ //TODO mensajes de error en español
 // Define variables and initialize with empty values
 $nombre = $nombrelargo = $fabricante = $numdosis = "";
 $tiempominimo =  $tiempomaximo = "";

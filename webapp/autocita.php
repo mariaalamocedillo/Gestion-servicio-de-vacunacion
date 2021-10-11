@@ -72,6 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             if ($stmt->num_rows >= 2) {
                 $vacunacion_err = "Su vacunación ya se ha completado";
                 header("location: inicio_pctes.php");
+                exit;
             } else {
                 //sumamos uno al número de dosis que se le ha aplicado
                 $num_dosis = $stmt->num_rows + 1;
@@ -113,9 +114,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $stmt->close();
         }
     }
-
-    // Close connection
-    $mysqli->close();
 }
 ?>
 
@@ -127,7 +125,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <style>
         body{ font: 14px sans-serif; }
-
     </style>
     <script type="text/javascript">
         $(".form_datetime").datetimepicker({
@@ -165,7 +162,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <select class="form-control <?php echo (!empty($centro_vacunacion_err)) ? 'is-invalid' : ''; ?>
                                         custom-select d-block w-100" id="centro" name="centro" required="">
                         <option value="0">Seleccione...</option>
-                        <option>Zendal</option>
+                        <?php
+                        $sql = "SELECT * FROM centros";
+                        if($result = $mysqli->query($sql)){
+                            if($result->num_rows > 0){
+                                while($row = $result->fetch_array()){
+                                    echo "<option value='" .$row['nombre']."'>" .$row['nombre']. ", " .$row['localidad']. "</option>";
+                                }
+                                // Free result set
+                                $result->free();
+                            }
+                        } else{
+                            echo "Oops! Algo fue mal. Inténtelo más tarde.";
+                        }
+                        // Close connection
+                        $mysqli->close();
+                        ?>
                     </select>
                     <span class="invalid-feedback"><?php echo $centro_vacunacion_err; ?></span>
                 </div>

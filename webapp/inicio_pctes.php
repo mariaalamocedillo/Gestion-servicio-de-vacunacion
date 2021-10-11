@@ -2,8 +2,8 @@
 // Initialize the session
 session_start();
 
-
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+//si no se ha identificado como paciente, le llevamos a identificacion
+if(!isset($_SESSION["DNI"])){
     header("location: identificacion.php");
     exit;
 }
@@ -47,33 +47,7 @@ if ($stmt = $mysqli->prepare($sql)) {
 $stmt -> close();
 
 
-// Buscamos si le han aplicado alguna dosis
-$sql = "SELECT * FROM registro_vacunados WHERE DNI = ?";
 
-if ($stmt = $mysqli->prepare($sql)) {
-    // Bind variables to the prepared statement as parameters
-    $stmt->bind_param("s", $param_DNI);
-
-    // Set parameters
-    $param_DNI = $DNI;
-
-    // Attempt to execute the prepared statement
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
-        $fila = $result->fetch_assoc();
-
-        if($stmt->num_rows() == 0){
-            $sindosis = true;
-        }
-    } else {
-        echo "Oops! Algo fue mal. Inténtelo más tarde.";
-    }
-}
-
-// Close statement
-$stmt -> close();
-
-$mysqli->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,13 +85,9 @@ $mysqli->close();
         <div class="logo">
             <a href="inicio.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70"></a>
         </div>
-
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a class="active" href="logout.php">Salir</a></li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
+        <div class="botones">
+            <a href="logout.php">Salir</a>
+        </div>
 
     </div>
 </header>
@@ -126,15 +96,17 @@ $mysqli->close();
     <div class="hero-container">
         <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
 
-            <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
 
             <div class="carousel-inner" role="listbox">
-                <!-- Slide 1 -->
                 <div class="carousel-item active" style="background: url(img/slide/slide-1.jpg)">
                     <div class="carousel-container">
                         <div class="carousel-content">
                             <h2 class="animate__animated animate__fadeInDown">Bienvenido al portal de <span>vacunación COVID-19</span></h2>
-                            <p class="animate__animated animate__fadeInUp">En este portal podrá encontrar información sobre sus citas para vacunarse, solicitar citas o obtener información sobre sus previas dosis</p>
+                            <p class="animate__animated animate__fadeInUp">
+                                En este portal podrá encontrar información sobre sus citas para vacunarse, solicitar citas o obtener información sobre sus previas dosis
+                                Si quiere solicitar una cita para vacunarse, entre en el siguiente enlace:
+                            </p>
+                            <a href="autocita.php" class="btn-get-started animate__animated animate__fadeInUp">Autocita</a>
                         </div>
                     </div>
                 </div>
@@ -166,13 +138,41 @@ $mysqli->close();
                 <div class="col">
                         <h3>Vacunaciones previas</h3>
                         <?php
-                        if ($sindosis){
-                            echo "Aún no se le ha aplicado ninguna dosis";
-                        } else{
-                            while($fila = $result->fetch_array()) {
-                                echo "Se le aplicó su " .$fila["num_dosis"]. "º dosis en el centro " .$fila["centro_vacunacion"]. " el día:" .$fila["fecha"]. ". Num. lote: ".$fila["num_lote"]." Fabricante: ".$fila["fabricante"] ;
+                        // Buscamos si le han aplicado alguna dosis
+                        $sql = "SELECT * FROM registro_vacunados WHERE DNI = ?";
+
+                        if ($stmt = $mysqli->prepare($sql)) {
+                            // Bind variables to the prepared statement as parameters
+                            $stmt->bind_param("s", $param_DNI);
+
+                            // Set parameters
+                            $param_DNI = $DNI;
+
+                            // Attempt to execute the prepared statement
+                            if ($stmt->execute()) {
+                                $result = $stmt->get_result();
+                                if($result->num_rows == 0){
+                                    echo "Aún no se le ha aplicado ninguna dosis";
+                                } else{
+                                    while($fila = $result->fetch_array()) {
+                                        echo "<div> Se le aplicó su " .$fila["num_dosis"]. "º dosis en el centro " .$fila["centro_vacunacion"]. ":";
+                                        echo "<br>&nbsp;&nbsp; Fecha:" .$fila["fecha_vacunacion"];
+                                        echo "<br>&nbsp;&nbsp; Num. lote: ".$fila["num_lote"];
+                                        echo "<br>&nbsp;&nbsp; Fabricante: ".$fila["fabricante"].".</div>" ;
+                                    }
+                                    if ($result->num_rows == 2){
+                                        echo "\n---Ya se ha completado su vacunación---";
+                                    }
+                                }
+                            } else {
+                                echo "Oops! Algo fue mal. Inténtelo más tarde.";
                             }
                         }
+
+                        // Close statement
+                        $stmt -> close();
+
+                        $mysqli->close();
                         ?>
                 </div>
             </div>

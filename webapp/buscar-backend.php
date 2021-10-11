@@ -4,7 +4,7 @@ require_once "config/configuracion.php";
 
 if(isset($_REQUEST["term"])){
     // Prepare a select statement
-    $sql = "SELECT * FROM vacuna WHERE nombre LIKE ?";
+    $sql = "SELECT * FROM centros WHERE nombre LIKE ?";
 
     if($stmt = $mysqli->prepare($sql)){
         // Bind variables to the prepared statement as parameters

@@ -60,5 +60,6 @@ CREATE TABLE centros (
    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
    nombre VARCHAR(255) NOT NULL,
    abreviatura VARCHAR(255) NOT NULL,
-   localidad VARCHAR(255) NOT NULL
+   localidad VARCHAR(255) NOT NULL,
+   vacunacion TINYINT NOT NULL
 );

@@ -7,6 +7,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 header("location: login.php");
 exit;
 }
+
+$micentro = 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -27,34 +29,24 @@ exit;
             width: 120px;
         }
     </style>
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();   
-        });
-    </script>
 </head>
 <body>
 <!--barra de navegación-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
     <img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70">
-
-    <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mr-auto ml-3">
-            <li class="nav-item">
+            <div class="nav-item">
                 <a class="nav-link" href="inicio.php">Inicio</a>
-            </li>
-            <li class="nav-item dropdown">
+            </div>
+            <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="registros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Registros</a>
                 <div class="dropdown-menu" aria-labelledby="registros">
                     <a class="dropdown-item" href="listado_vacunas.php">Vacunas</a>
                     <a class="dropdown-item" href="listado_vacunados.php">Vacunados</a>
                 </div>
-            </li>
-            <li class="nav-item">
+            </div>
+            <div class="nav-item">
                 <a class="nav-link" href="logout.php">Salir</a>
-            </li>
-        </ul>
-    </div>
+            </div>
 </nav>
     <div class="wrapper">
         <div class="container-fluid">
@@ -62,14 +54,20 @@ exit;
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Lista citas</h2>
-                        <a href="create.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Nueva cita</a>
+                        <button class="btn btn-success pull-right" onclick="<?php $micentro = 1;?>"><i class="fa fa-search"></i> Mostrar en mi centro</button>
                     </div>
                     <?php
                     // Include config file
                     require_once "config/configuracion.php";
-                    
+                    //TODO que busque según la cookie
+                    if ($micentro == 1 && isset($_COOKIE["centro_trab"])){
+                        echo "Infor de su centor";
+                        echo $micentro;
+                    }
+
                     // Attempt select query execution
                     $sql = "SELECT * FROM citas";
+
                     if($result = $mysqli->query($sql)){
                         if($result->num_rows > 0){
                             echo '<table class="table table-bordered table-striped">';

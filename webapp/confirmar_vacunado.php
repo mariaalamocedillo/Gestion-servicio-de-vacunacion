@@ -1,4 +1,5 @@
 <?php
+//TODO desplegable con los centros
 
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
