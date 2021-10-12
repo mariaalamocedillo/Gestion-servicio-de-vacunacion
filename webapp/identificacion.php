@@ -69,6 +69,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $_SESSION["loggedin"] = true;
                     $_SESSION["DNI"] = $fila["DNI"];
                     $_SESSION["nombre"] = $fila["nombre"];
+                    $_SESSION['start'] = time();
+                    $_SESSION['expire'] = $_SESSION['start'] + (30 * 60); //por seguridad, las sesiones duran 30 min
+
                     // Redirect user to inicio
                     header("location: inicio_pctes.php");
                 } else{ //si no se encuentra, ponemos un mensaje de error (usamos el del DNI)

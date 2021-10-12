@@ -3,12 +3,12 @@
 session_start();
 
 // Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-header("location: login.php");
-exit;
+if(!isset($_SESSION["num_identif"])){
+    header("location: login.php");
+    exit;
 }
-
-$micentro = 0;
+// Include config file
+require_once "config/configuracion.php";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -54,19 +54,27 @@ $micentro = 0;
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Lista citas</h2>
-                        <button class="btn btn-success pull-right" onclick="<?php $micentro = 1;?>"><i class="fa fa-search"></i> Mostrar en mi centro</button>
+                        <button class="btn btn-success pull-right"><i class="fa fa-search"></i> Mostrar en mi centro</button>
                     </div>
                     <?php
-                    // Include config file
-                    require_once "config/configuracion.php";
-                    //TODO que busque según la cookie
-                    if ($micentro == 1 && isset($_COOKIE["centro_trab"])){
-                        echo "Infor de su centor";
-                        echo $micentro;
+                    $sql="SELECT * FROM citas";
+                    if(isset($_COOKIE["centro_trab"])){
+                        $centro = $_COOKIE["centro_trab"];
+                        //confirmamos que es un centro de salud válido
+                        $sqlcentro = "SELECT * FROM centros WHERE nombre LIKE '$centro'";
+                        if($stmt = $mysqli->prepare($sqlcentro)){
+                            if($stmt->execute()){
+                                $result = $stmt->get_result();
+                                $fila = $result->fetch_assoc();
+                                //si no se encuentran registros de un centro con ese nombre, se quedará la consulta inicial
+                                if($result->num_rows > 0){
+                                    if ($fila["vacunacion"] == 1) //si vacunan en ese dentro, entonces consultamos solo las citas de este centro
+                                        $sql= "SELECT * FROM citas WHERE centro_vacunacion = '$centro'";
+                                }
+                            }
+                        }
+                        $stmt->close();
                     }
-
-                    // Attempt select query execution
-                    $sql = "SELECT * FROM citas";
 
                     if($result = $mysqli->query($sql)){
                         if($result->num_rows > 0){

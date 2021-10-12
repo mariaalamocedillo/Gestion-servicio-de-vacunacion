@@ -4,8 +4,15 @@ session_start();
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: inicio.php");
-    exit;
+    if (isset($_SESSION["num_identif"])){
+        header("location: inicio.php");
+        exit;
+    } elseif (isset($_SESSION["DNI"])){
+        session_unset();
+        session_destroy();
+        header("location: inicio.php");
+        exit;
+    }
 }
 
 // Include config file
@@ -13,7 +20,7 @@ require_once "config/configuracion.php";
 
 // Define variables and initialize with empty values
 $num_identif = $password = "";
-$num_identif_err = $password_err = $login_err = "";
+$num_identif_err = $password_err = "";
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -64,13 +71,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $fila["id"];
                         $_SESSION["num_identif"] = $fila["num_identif"];
+                        $_SESSION['start'] = time();
+                        $_SESSION['expire'] = $_SESSION['start'] + (30 * 60); //por seguridad, las sesiones duran 30 min
                         // Redirect user to welcome page
                         header("location: inicio.php");
                     }
+                }else{
+                    // Username doesn't exist, display a generic error message
+                    $password_err = "Número o contraseña inválidos.";
                 }
-            } else{
-                // Username doesn't exist, display a generic error message
-                $login_err = "Número o contraseña inválidos.";
             }
         } else{
             echo "Oops! Algo salió mal. Inténtelo de nuevo.";
@@ -110,27 +119,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </style>
 
 </head>
-<body class="text-center">
-<div class="limiter">
-    <div class="container-login100">
-        <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
-            <form class="login100-form validate-form flex-sb flex-w"
+<body class="text-center bg-light">
+    <div class="container">
+        <div class="col-6 m-auto mt-5">
+            <form class=" validate-form flex-sb flex-w"
                   action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
 
-                <img class="col-2 mb-4" src="css/SaludMadrid.svg" width=50>
-                <div class="col-8 mb-4">
+                <img class="col-3 mb-4" src="css/SaludMadrid.svg" width=50>
+                <div class="col-7 mb-4">
                     <span class="login100-form-title text-center mb-3">Login</span>
                     <span>Este portal es de uso exclusivo para sanitarios. Si desea acceder a la información
                         sobre su vacunación, o desea solicitar una cita, acceda <a href="identificacion.php">aquí</a></span>
                 </div>
 
                 <span class="p-b-11 p-t-11">Código de empleado o colegiado </span>
-                    <input type="text" id="input_num_id" name="num_identif" class="form-control"
-                           placeholder="Email address" required autofocus>
+                    <input type="text" id="input_num_id" name="num_identif"  class="form-control <?php echo (!empty($num_identif_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $num_identif; ?>"
+                           placeholder="Codigo identificacion" autofocus>
+                <span class="invalid-feedback"><?php echo $num_identif_err; ?></span>
                 <span class="p-b-11 p-t-11">Contraseña</span>
-                    <input type="password" id="inputPassword" name="password" class="form-control"
-                           placeholder="Password" required>
-
+                    <input type="password" id="inputPassword" name="password"  class="form-control <?php echo (!empty($password)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>"
+                           placeholder="Password" >
+                <span class="invalid-feedback"><?php echo $password_err; ?></span>
                 <div class="flex-sb-m w-full p-b-48">
                         <a href="reset-password.php">
                             Olvidé mi contraseña
@@ -140,8 +149,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         </a>
                 </div>
 
-                <div class="container-login100-form-btn">
-                    <button class="login100-form-btn">
+                <div class="m-auto">
+                    <button class="btn btn-primary text-center sizefull">
                         Login
                     </button>
                 </div>
@@ -149,9 +158,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </form>
         </div>
     </div>
-</div>
-<div id="dropDownSelect1"></div>
-
 </body>
 <script src="js/jquery-3.2.1.min.js">
 <script src="js/popper.js"></script>

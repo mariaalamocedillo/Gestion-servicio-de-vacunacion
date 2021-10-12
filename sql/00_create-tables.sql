@@ -2,7 +2,7 @@
 USE proyectodb;
 
 -- Crear tabla usuarios (referente a los médicos y programadores/gestores de la web, donde
--- si es médico se debe introducir el numero de colegiado, y si no el de empleado)
+-- si es médico se debe introducir el numero de colegiado, y si no, el de empleado)
 CREATE TABLE usuarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
@@ -33,14 +33,23 @@ CREATE TABLE pacientes (
 );
 
 -- Crear tabla con las citas de vacunación
+CREATE TABLE centros (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL UNIQUE,
+    abreviatura VARCHAR(255) NOT NULL,
+    localidad VARCHAR(255) NOT NULL,
+    vacunacion BOOLEAN NOT NULL
+);
+
+-- Crear tabla con las citas de vacunación
 CREATE TABLE citas (
-    id_cita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    DNI CHAR(9) NOT NULL,
-    num_dosis INT(10) NOT NULL,
-    centro_vacunacion VARCHAR(255) NOT NULL,
-    fecha DATETIME NOT NULL,
-    FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
-    FOREIGN KEY (centro_vacunacion) REFERENCES centros(abreviatura)
+                       id_cita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                       DNI CHAR(9) NOT NULL,
+                       num_dosis INT(10) NOT NULL,
+                       centro_vacunacion VARCHAR(255) NOT NULL,
+                       fecha DATETIME NOT NULL,
+                       FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
+                       FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
 -- Crear tabla con los registros de los vacunados
@@ -52,14 +61,7 @@ CREATE TABLE registro_vacunados (
     num_lote INT NOT NULL,
     centro_vacunacion VARCHAR(255) NOT NULL,
     fecha_vacunacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (DNI) REFERENCES pacientes(DNI)
+    FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
+    FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
--- Crear tabla con las citas de vacunación
-CREATE TABLE centros (
-   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-   nombre VARCHAR(255) NOT NULL,
-   abreviatura VARCHAR(255) NOT NULL,
-   localidad VARCHAR(255) NOT NULL,
-   vacunacion TINYINT NOT NULL
-);

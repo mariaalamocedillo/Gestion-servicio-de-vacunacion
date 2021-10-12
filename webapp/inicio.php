@@ -6,6 +6,14 @@ session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
+} else{
+    //si no está iniciada con un número de empleado, se cierra su sesión y redirige
+    if(!isset($_SESSION["num_identif"])){
+        session_unset();
+        session_destroy();
+        header("location: login.php");
+        exit;
+    }
 }
 $centro_trab = "";
 //TODO que no recargue la página- solo cree una cookie + aplicarla
@@ -45,6 +53,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Template Main CSS File -->
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="css/busqueda.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <script>
         $(document).ready(function(){
