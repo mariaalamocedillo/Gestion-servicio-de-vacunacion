@@ -1,5 +1,4 @@
 <?php
-//TODO desplegable con los centros
 
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
@@ -107,9 +106,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         }
 
-
-        // Close connection
-        $mysqli->close();
     } else {
         // Check existence of id parameter
         if (empty(trim($_GET["id"]))) {
@@ -127,6 +123,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Confirmar cita</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="https://www.comunidad.madrid/sites/all/themes/drpl/favicon.ico" type="image/vnd.microsoft.icon">
     <style>
         .wrapper{
             width: 600px;
@@ -148,10 +145,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="text" name="num_lote" class="form-control <?php echo (!empty($num_lote_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $num_lote; ?>">
                             <span class="invalid-feedback"><?php echo $num_lote_err; ?></span>
                         </div>
-                        <div>
-                            <label>Fabricante</label>
-                            <input type="text" name="fabricante" class="form-control <?php echo (!empty($fabricante_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $fabricante; ?>">
+                        <div class="col-12">
+                            <label for="fabricante">Fabricante</label>
+                            <select name="fabricante" class="form-select">
+                                <option value="0">Seleccione...</option>
+                            <?php
+                            $sql = "SELECT * FROM vacunas";
+                            if ($result = $mysqli->query($sql)) {
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_array()) {
+                                        echo "<option value='" .$row["facbricante"]. "'> " . $row["fabricante"] . "</option>";
+                                    }
+                                }
+                            }
+                            // Free result set
+                            $result->free();
+                            //close connection
+                            $mysqli->close();
+                            ?>
+                            </select>
                             <span class="invalid-feedback"><?php echo $fabricante_err; ?></span>
+
                         </div>
 
 

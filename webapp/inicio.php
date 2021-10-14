@@ -1,6 +1,7 @@
 <?php
 // Initialize the session
 session_start();
+require_once "config/configuracion.php";
 
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -16,11 +17,36 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     }
 }
 $centro_trab = "";
-//TODO que no recargue la página- solo cree una cookie + aplicarla
+//TODO que no recargue la página- solo cree una cookie
 if($_SERVER["REQUEST_METHOD"] == "POST") {
+    //eliminamos cuaquier cookie que pueda estar aún abierta para escribir otra
+    setcookie("centro_trab", time() - (30*60));
+    setcookie("localidad_trab", time() - (30*60));
+
     if (!empty(trim($_POST["centro_trab"]))) {
         $centro_trab = trim($_POST["centro_trab"]);
-        setcookie("centro_trab", $centro_trab, time() + (30 * 24 * 3600), "/");
+        $sql = "SELECT * FROM centros WHERE nombre = '" .$centro_trab. "'";
+
+        if($stmt = $mysqli->prepare($sql)){
+            if($stmt->execute()) {
+                $result = $stmt->get_result();
+                // Check number of rows in the result set
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_array(MYSQLI_ASSOC);
+                    //si es centro de vacunación, guardaremos el nombre, en caso de que no lo sea, guardamos la localidad
+                    if ($row["vacunacion"] == 1) {
+                        setcookie("centro_trab", str_replace(" ", "-", $row["nombre"]), time() + (60 * 60), "/");
+                    } else{
+                        setcookie("localidad_trab", str_replace(" ", "-", $row["localidad"]), time() + (60 * 60), "/");
+                    }
+                } else {
+                    echo "ERROR: No se pudo ejecutar $sql. ";
+                }
+            }
+
+            // Close statement
+            $stmt->close();
+        }
     }
 }
 ?>
@@ -36,8 +62,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <!-- Favicons -->
-    <link href="img/favicon.png" rel="icon">
-    <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link rel="shortcut icon" href="https://www.comunidad.madrid/sites/all/themes/drpl/favicon.ico" type="image/vnd.microsoft.icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">

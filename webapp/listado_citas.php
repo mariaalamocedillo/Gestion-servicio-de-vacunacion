@@ -29,6 +29,23 @@ require_once "config/configuracion.php";
             width: 120px;
         }
     </style>
+    <script>
+        function showCentro(str) {
+            if (str == "") {
+                document.getElementById("tabla").innerHTML = "";
+                return;
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("tabla").innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open("GET","gettable.php?centros="+str,true);
+                xmlhttp.send();
+            }
+        }
+    </script>
 </head>
 <body>
 <!--barra de navegación-->
@@ -54,68 +71,39 @@ require_once "config/configuracion.php";
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Lista citas</h2>
-                        <button class="btn btn-success pull-right"><i class="fa fa-search"></i> Mostrar en mi centro</button>
-                    </div>
                     <?php
-                    $sql="SELECT * FROM citas";
-                    if(isset($_COOKIE["centro_trab"])){
-                        $centro = $_COOKIE["centro_trab"];
-                        //confirmamos que es un centro de salud válido
-                        $sqlcentro = "SELECT * FROM centros WHERE nombre LIKE '$centro'";
-                        if($stmt = $mysqli->prepare($sqlcentro)){
-                            if($stmt->execute()){
-                                $result = $stmt->get_result();
-                                $fila = $result->fetch_assoc();
-                                //si no se encuentran registros de un centro con ese nombre, se quedará la consulta inicial
-                                if($result->num_rows > 0){
-                                    if ($fila["vacunacion"] == 1) //si vacunan en ese dentro, entonces consultamos solo las citas de este centro
-                                        $sql= "SELECT * FROM citas WHERE centro_vacunacion = '$centro'";
-                                }
+                    //mostramos un desplegable con los centros en los cuales buscar las citas
+                    echo "<form class='pull-right mt-3'>"
+                        . "<select name='filtro_centro' onchange='showCentro(this.value)'>"
+                        . "<option value='all'>Todos los centros</option>";
+                    //comprobamos si tenemos su centro de trabajo o localidad; en el caso de la localidad, mostramos los centros de su zona
+                    if(isset($_COOKIE["centro_trab"])) {
+                        $centro_trabajo = str_replace("-", " ", $_COOKIE["centro_trab"]);
+                        //creamos un comando sql que mostrará el resto de centros (no mostrará la cookie, que será la primera mostrada
+                        $sql = "SELECT * FROM centros WHERE nombre NOT LIKE '" . $centro_trabajo . "' AND vacunacion = 1";
+                        //mostramos primero su centro de trabajo y luego el resto de centros
+                        echo "<option value=" . $centro_trabajo . ">Mi centro (" . $centro_trabajo . ")";
+                    } elseif (isset($_COOKIE["localidad_trab"])){
+                        $localidad = str_replace("-", " ", $_COOKIE["localidad_trab"]);
+                        //creamos un comando sql que mostrará los de la localidad
+                        $sql = "SELECT * FROM centros WHERE localidad LIKE '" . $localidad . "' AND vacunacion = 1";
+                    }
+                    if ($result = $mysqli->query($sql)) {
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_array()) {
+                                    echo "<option value=" . str_replace(" ", "-", $row["nombre"]) . ">" . $row["nombre"] . "</option>";
                             }
                         }
-                        $stmt->close();
                     }
+                    // Free result set
+                    $result->free();
 
-                    if($result = $mysqli->query($sql)){
-                        if($result->num_rows > 0){
-                            echo '<table class="table table-bordered table-striped">';
-                                echo "<thead>";
-                                    echo "<tr>";
-                                        echo "<th>#</th>";
-                                        echo "<th>DNI</th>";
-                                        echo "<th>Dosis a aplicar</th>";
-                                        echo "<th>Centro de vacunación</th>";
-                                        echo "<th>Fecha y hora</th>";
-                                    echo "</tr>";
-                                echo "</thead>";
-                                echo "<tbody>";
-                                while($row = $result->fetch_array()){
-                                    echo "<tr>";
-                                        echo "<td>" . $row['id_cita'] . "</td>";
-                                        echo "<td>" . $row['DNI'] . "</td>";
-                                        echo "<td>" . $row['num_dosis'] . "</td>";
-                                        echo "<td>" . $row['centro_vacunacion'] . "</td>";
-                                        echo "<td>" . $row['fecha'] . "</td>";
-                                        echo "<td>";
-                                            echo '<a href="read.php?id='. $row['id_cita'] .'" class="mr-3" title="Detalles" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="delete_cita.php?id='. $row['id_cita'] .'" class="mr-3" title="Anular" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            echo '<a href="confirmar_vacunado.php?id='. $row['id_cita'] .'" title="Completada" data-toggle="tooltip"><span class="fa fa-check-square"></span></a>';
-                                    echo "</td>";
-                                    echo "</tr>";
-                                }
-                                echo "</tbody>";                            
-                            echo "</table>";
-                            // Free result set
-                            $result->free();
-                        } else{
-                            echo '<div class="alert alert-danger"><em>No se encontraron registros.</em></div>';
-                        }
-                    } else{
-                        echo "Oops! Algo fue mal. Inténtelo más tarde.";
-                    }
-                    
-                    // Close connection
-                    $mysqli->close();
+                    echo "</select>"
+                          . "</form>"
+                    . "</div>";
+                    //en este div se mostrarán las citas
+                    echo "<div id='tabla'></div>"
+
                     ?>
                 </div>
             </div>        

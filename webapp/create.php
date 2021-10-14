@@ -13,19 +13,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate nombre
     $input_nombre = trim($_POST["nombre"]);
     if(empty($input_nombre)){
-        $nombre_err = "Please enter a name.";
+        $nombre_err = "Introduzca un nombre.";
     } elseif(!filter_var($input_nombre, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $nombre_err = "Please enter a valid name.";
+        $nombre_err = "Introduzca un nombre válido.";
     } else{
         $nombre = $input_nombre;
     }
 
-    // Validate nombre_largo
+    // Validate el nombre completo
     $input_nombrelargo = trim($_POST["nombrelargo"]);
     if(empty($input_nombre)){
-        $nombrelargo_err = "Please enter a name.";
+        $nombrelargo_err = "Introduzca el nombre completo.";
     } elseif(!filter_var($input_nombrelargo, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $nombrelargo_err = "Please enter a valid name.";
+        $nombrelargo_err = "Introduzca un nombre completo válido.";
     } else{
         $nombrelargo = $input_nombrelargo;
     }
@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate fabricante
     $input_fabricante = trim($_POST["fabricante"]);
     if(empty($input_fabricante)){
-        $fabricante_err = "Please enter an address.";
+        $fabricante_err = "Introduzca el fabricante.";
     } else{
         $fabricante = $input_fabricante;
     }
@@ -41,15 +41,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate numdosis
     $input_numdosis = trim($_POST["numdosis"]);
     if(empty($input_numdosis)){
-        $numdosis_err = "Please enter the salary amount.";
+        $numdosis_err = "Introduzca el número de dosis necesarias.";
     } elseif(!ctype_digit($input_numdosis)){
-        $numdosis_err = "Please enter a positive integer value.";
+        $numdosis_err = "Introduzca un número válido.";
     } else{
         $numdosis = $input_numdosis;
     }
 
-    $tiempominimo = trim($_POST["tiempominimo"]);
-    $tiempomaximo = trim($_POST["tiempomaximo"]);
+    // Validate min time
+    $input_tiempominimo = trim($_POST["tiempominimo"]);
+    if(!ctype_digit($input_tiempominimo)){
+        $tiempominimo_err = "Introduzca un número válido.";
+    } else{
+        $tiempominimo = $input_tiempominimo;
+    }
+
+    // Validate max time
+    $input_tiempomaximo = trim($_POST["tiempomaximo"]);
+    if(!ctype_digit($input_tiempomaximo)){
+        $tiempomaximo_err = "Introduzca un número válido.";
+    } else{
+        $tiempomaximo = $input_tiempomaximo;
+    }
     
     // Check input errors before inserting in database
     if(empty($nombre_err) && empty($fabricante_err) && empty($nombrelargo_err)&& empty($numdosis_err)){

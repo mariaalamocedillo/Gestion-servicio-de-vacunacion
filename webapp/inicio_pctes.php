@@ -60,8 +60,7 @@ $stmt -> close();
     <meta content="Página de inicio para los usuarios (sanitarios y otros empleados)" name="description">
 
     <!-- Favicons -->
-    <link href="img/favicon.png" rel="icon">
-    <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link rel="shortcut icon" href="https://www.comunidad.madrid/sites/all/themes/drpl/favicon.ico" type="image/vnd.microsoft.icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -83,7 +82,7 @@ $stmt -> close();
     <div class="container d-flex justify-content-between align-items-center">
 
         <div class="logo">
-            <a href="inicio.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70"></a>
+            <a href="inicio_pctes.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70"></a>
         </div>
         <div class="botones">
             <a href="logout.php">Salir</a>
