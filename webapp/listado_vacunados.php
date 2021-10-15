@@ -7,6 +7,8 @@ if(!isset($_SESSION["num_identif"])){
     header("location: login.php");
     exit;
 }
+// Include config file
+require_once "config/configuracion.php";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -58,8 +60,6 @@ if(!isset($_SESSION["num_identif"])){
                     <h2 class="pull-left">Lista vacunados</h2>
                 </div>
                 <?php
-                // Include config file
-                require_once "config/configuracion.php";
 
                 // Attempt select query executions
                 $sql = "SELECT * FROM registro_vacunados";

@@ -2,6 +2,7 @@
 // Initialize the session
 session_start();
 require_once "config/configuracion.php";
+$centro_err = "";
 
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -40,7 +41,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         setcookie("localidad_trab", str_replace(" ", "-", $row["localidad"]), time() + (60 * 60), "/");
                     }
                 } else {
-                    echo "ERROR: No se pudo ejecutar $sql. ";
+                    $centro_err = "No se encontró dicho centro de trabajo";
                 }
             }
 
@@ -136,6 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <input class="form-control <?php echo (!empty($centro_trab)) ? 'is-invalid' : ''; ?>" name="centro_trab"
                                            value="<?php echo $centro_trab; ?>" type="text" autocomplete="off" placeholder="Buscar centro..." />
                                     <div class="result"></div>
+                                    <span class="invalid-feedback"><?php echo $centro_err; ?></span>
                                 </div>
                                 <input type="submit" class="btn btn-primary btn-get-started" value="Confirmar">
                             </form>

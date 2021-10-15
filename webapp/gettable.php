@@ -13,7 +13,6 @@ if (!strcmp($centro,"all")){
 } else{
     $sql = "SELECT * FROM citas WHERE centro_vacunacion = '".$centro."'";
 }
-
 if($result = $mysqli->query($sql)){
     if($result->num_rows > 0){
         echo '<table class="table table-bordered table-striped">';

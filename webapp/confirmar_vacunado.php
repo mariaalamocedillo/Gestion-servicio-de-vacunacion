@@ -1,5 +1,7 @@
 <?php
 
+// Include config file
+require_once "config/configuracion.php";
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
 $fabricante_err = $num_lote_err = "";
@@ -105,7 +107,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
         }
-
     } else {
         // Check existence of id parameter
         if (empty(trim($_GET["id"]))) {
@@ -122,8 +123,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Confirmar cita</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="shortcut icon" href="https://www.comunidad.madrid/sites/all/themes/drpl/favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
     <style>
         .wrapper{
             width: 600px;
@@ -145,21 +146,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="text" name="num_lote" class="form-control <?php echo (!empty($num_lote_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $num_lote; ?>">
                             <span class="invalid-feedback"><?php echo $num_lote_err; ?></span>
                         </div>
-                        <div class="col-12">
+                        <div>
                             <label for="fabricante">Fabricante</label>
-                            <select name="fabricante" class="form-select">
+                            <select name="fabricante" class="form-control custom-select d-block w-100">
                                 <option value="0">Seleccione...</option>
                             <?php
-                            $sql = "SELECT * FROM vacunas";
+                            $sql = "SELECT * FROM vacuna";
                             if ($result = $mysqli->query($sql)) {
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_array()) {
                                         echo "<option value='" .$row["facbricante"]. "'> " . $row["fabricante"] . "</option>";
                                     }
                                 }
+                                // Free result set
+                                $result->free();
                             }
-                            // Free result set
-                            $result->free();
+
                             //close connection
                             $mysqli->close();
                             ?>
