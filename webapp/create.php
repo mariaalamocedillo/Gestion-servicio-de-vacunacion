@@ -1,16 +1,16 @@
 <?php
 // Include config file
 require_once "config/configuracion.php";
- //TODO mensajes de error en español
-// Define variables and initialize with empty values
+
+// Definimos las variables
 $nombre = $nombrelargo = $fabricante = $numdosis = "";
 $tiempominimo =  $tiempomaximo = "";
 $nombre_err = $nombrelargo_err = $fabricante_err = $numdosis_err ="";
 $tiempominimo_err =  $tiempomaximo_err = "";
  
-// Processing form data when form is submitted
+// procesamos la información del formulaario
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // Validate nombre
+    // Validar nombre
     $input_nombre = trim($_POST["nombre"]);
     if(empty($input_nombre)){
         $nombre_err = "Introduzca un nombre.";
@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $nombre = $input_nombre;
     }
 
-    // Validate el nombre completo
+    // Validar el nombre completo
     $input_nombrelargo = trim($_POST["nombrelargo"]);
     if(empty($input_nombre)){
         $nombrelargo_err = "Introduzca el nombre completo.";
@@ -30,7 +30,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $nombrelargo = $input_nombrelargo;
     }
     
-    // Validate fabricante
+    // Validar fabricante
     $input_fabricante = trim($_POST["fabricante"]);
     if(empty($input_fabricante)){
         $fabricante_err = "Introduzca el fabricante.";
@@ -38,7 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $fabricante = $input_fabricante;
     }
     
-    // Validate numdosis
+    // Validar numdosis
     $input_numdosis = trim($_POST["numdosis"]);
     if(empty($input_numdosis)){
         $numdosis_err = "Introduzca el número de dosis necesarias.";
@@ -48,7 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $numdosis = $input_numdosis;
     }
 
-    // Validate min time
+    // Validar min time
     $input_tiempominimo = trim($_POST["tiempominimo"]);
     if(!ctype_digit($input_tiempominimo)){
         $tiempominimo_err = "Introduzca un número válido.";
@@ -56,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $tiempominimo = $input_tiempominimo;
     }
 
-    // Validate max time
+    // Validar max time
     $input_tiempomaximo = trim($_POST["tiempomaximo"]);
     if(!ctype_digit($input_tiempomaximo)){
         $tiempomaximo_err = "Introduzca un número válido.";
@@ -64,7 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $tiempomaximo = $input_tiempomaximo;
     }
     
-    // Check input errors before inserting in database
+    // Confirmamos que no hay errores y almacenamos en la base de datos
     if(empty($nombre_err) && empty($fabricante_err) && empty($nombrelargo_err)&& empty($numdosis_err)){
         // Prepare an insert statement
         $sql = "INSERT INTO vacuna (nombre, nombre_largo, fabricante, num_dosis, tiempo_minimo, tiempo_maximo) VALUES (?, ?, ?, ?, ?, ?)";
