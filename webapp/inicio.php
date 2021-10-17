@@ -17,39 +17,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         exit;
     }
 }
-$centro_trab = "";
-//TODO que no recargue la página- solo cree una cookie
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    //eliminamos cuaquier cookie que pueda estar aún abierta para escribir otra
-    setcookie("centro_trab", time() - (30*60));
-    setcookie("localidad_trab", time() - (30*60));
 
-    if (!empty(trim($_POST["centro_trab"]))) {
-        $centro_trab = trim($_POST["centro_trab"]);
-        $sql = "SELECT * FROM centros WHERE nombre = '" .$centro_trab. "'";
-
-        if($stmt = $mysqli->prepare($sql)){
-            if($stmt->execute()) {
-                $result = $stmt->get_result();
-                // Check number of rows in the result set
-                if ($result->num_rows > 0) {
-                    $row = $result->fetch_array(MYSQLI_ASSOC);
-                    //si es centro de vacunación, guardaremos el nombre, en caso de que no lo sea, guardamos la localidad
-                    if ($row["vacunacion"] == 1) {
-                        setcookie("centro_trab", str_replace(" ", "-", $row["nombre"]), time() + (60 * 60), "/");
-                    } else{
-                        setcookie("localidad_trab", str_replace(" ", "-", $row["localidad"]), time() + (60 * 60), "/");
-                    }
-                } else {
-                    $centro_err = "No se encontró dicho centro de trabajo";
-                }
-            }
-
-            // Close statement
-            $stmt->close();
-        }
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,9 +50,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <script>
+        function guardar(){
+            var str = document.getElementById("input_searchbox").value;
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("centro_error").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET","confirm-backend.php?centros="+str,true);
+            xmlhttp.send();
+        };
         $(document).ready(function(){
             $('.search-box input[type="text"]').on("keyup input", function(){
-                /* Get input value on change */
+                // Get input value on change
                 var inputVal = $(this).val();
                 var resultDropdown = $(this).siblings(".result");
                 if(inputVal.length){
@@ -102,7 +82,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $(this).parents(".search-box").find('input[type="text"]').val($(this).text());
                 $(this).parent(".result").empty();
             });
-        });
+
+        })
+        /**/
     </script>
 </head>
 <body>
@@ -132,15 +114,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h2 class="animate__animated animate__fadeInDown">Bienvenido al portal de <br> gestión de <span>vacunación COVID-19</span></h2>
                             <p class="animate__animated animate__fadeInUp">Este portal está orientado a la gestión de las citas de vacunación contra el coronavirus. El uso de este portal es exclusivo para sanitarios. Podrán ver información de los suministros de las vacunasa, las citas de cada centro y el registro de los pacientes con el número de dosis que se les ha aplicado.</p>
                             <p class="animate__animated animate__fadeInUp">Introduzca su centro de trabajo: </p>
-                            <form action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post" class=" animate__animated animate__fadeInUp">
                                 <div class="search-box">
-                                    <input class="form-control <?php echo (!empty($centro_trab)) ? 'is-invalid' : ''; ?>" name="centro_trab"
-                                           value="<?php echo $centro_trab; ?>" type="text" autocomplete="off" placeholder="Buscar centro..." />
+                                    <input class="form-control" name="centro_trab" id="input_searchbox"
+                                           type="text" autocomplete="off" placeholder="Buscar centro..." />
                                     <div class="result"></div>
-                                    <span class="invalid-feedback"><?php echo $centro_err; ?></span>
+                                    <span class="invalid-feedback" id="centro_error"></span>
                                 </div>
-                                <input type="submit" class="btn btn-primary btn-get-started" value="Confirmar">
-                            </form>
+                                <input type="submit" class="btn btn-primary btn-get-started" value="Confirmar" onclick="guardar()">
                         </div>
                     </div>
                 </div>

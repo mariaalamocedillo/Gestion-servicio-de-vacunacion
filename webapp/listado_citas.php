@@ -30,6 +30,17 @@ require_once "config/configuracion.php";
         }
     </style>
     <script>
+        //por defecto muestra todas las citas
+        document.addEventListener("DOMContentLoaded", function event() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("tabla").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET","gettable.php?centros=all",true);
+            xmlhttp.send();
+        });
         function showCentro(str) {
             if (str == "") {
                 document.getElementById("tabla").innerHTML = "";
@@ -41,7 +52,7 @@ require_once "config/configuracion.php";
                         document.getElementById("tabla").innerHTML = this.responseText;
                     }
                 };
-                xmlhttp.open("GET","gettable.php?centros="+str(),true);
+                xmlhttp.open("GET","gettable.php?centros="+str,true);
                 xmlhttp.send();
             }
         }
