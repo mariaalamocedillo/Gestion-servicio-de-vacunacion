@@ -1,7 +1,10 @@
 <?php
 // Include config file
 require_once "config/configuracion.php";
- 
+
+// Include config file
+require_once "config/configuracion.php";
+
 // Define variables and initialize with empty values
 $nombre = $nombrelargo = $fabricante = $numdosis = "";
 $tiempominimo =  $tiempomaximo = "";

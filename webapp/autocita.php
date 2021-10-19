@@ -2,11 +2,12 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+// Si no está logeado como paciente, le enviamos a la página de identificación
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["DNI"])){
     header("location: identificacion.php");
     exit;
 }
+
 
 // Include config file
 require_once "config/configuracion.php";

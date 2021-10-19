@@ -2,13 +2,15 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in, if he is, redirect to the initial page
-if(isset($_SESSION["DNI"])){
-    header("location: inicio_pctes.php"); //es un paciente
-    exit;
-} elseif(isset($_SESSION["num_identif"])){
-    header("location: inicio.php"); //es un empleado
-    exit;
+// Si está logeado con cualquier tipo de cuenta, se redirige a la página de inicio correspondiente
+if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true){
+    if(isset($_SESSION["DNI"])){
+        header("location: inicio_pctes.php"); //es un paciente
+        exit;
+    } elseif(isset($_SESSION["num_identif"])){
+        header("location: inicio.php"); //es un empleado
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>

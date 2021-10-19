@@ -11,4 +11,3 @@ session_destroy();
 // Redirect to index page
 header("location: index.php");
 exit;
-?>

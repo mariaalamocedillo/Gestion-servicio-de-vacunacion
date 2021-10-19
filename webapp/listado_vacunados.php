@@ -2,11 +2,12 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["num_identif"])){
+// Si no está logeado como empleado, lo llevamos a la página de login.
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
     header("location: login.php");
     exit;
 }
+
 // Include config file
 require_once "config/configuracion.php";
 ?>

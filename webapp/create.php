@@ -2,6 +2,12 @@
 // Include config file
 require_once "config/configuracion.php";
 
+// Si no está logeado como empleado, lo llevamos a la página de login.
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
+    header("location: login.php");
+    exit;
+}
+
 // Definimos las variables
 $nombre = $nombrelargo = $fabricante = $numdosis = "";
 $tiempominimo =  $tiempomaximo = "";

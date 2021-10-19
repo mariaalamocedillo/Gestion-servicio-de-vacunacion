@@ -43,13 +43,13 @@ CREATE TABLE centros (
 
 -- Crear tabla con las citas de vacunación
 CREATE TABLE citas (
-                       id_cita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                       DNI CHAR(9) NOT NULL,
-                       num_dosis INT(10) NOT NULL,
-                       centro_vacunacion VARCHAR(255) NOT NULL,
-                       fecha DATETIME NOT NULL,
-                       FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
-                       FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
+    id_cita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    DNI CHAR(9) NOT NULL,
+    num_dosis INT(10) NOT NULL,
+    centro_vacunacion VARCHAR(255) NOT NULL,
+    fecha DATETIME NOT NULL,
+    FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
+    FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
 -- Crear tabla con los registros de los vacunados
@@ -65,3 +65,13 @@ CREATE TABLE registro_vacunados (
     FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
+INSERT INTO centros (nombre, abreviatura, localidad, vacunacion) VALUES
+    ROW("Hospital Enfermera Isabel Zendal", "Zendal", "Madrid", 1),
+    ROW("Wizink Center", "Wizink", "Madrid", 1),
+    ROW("Centro de salud de Reyes Magos", "Reyes Magos", "Alcala de Henares", 0),
+    ROW("Hospital Principe de Asturias", "Principe asturias", "Alcala de Henares", 1);
+
+INSERT INTO pacientes VALUES
+    ROW("12345678K", "Jorge", "Anton", "2000-03-03"),
+    ROW("12345677K", "Jonas", "Anhelo", "1981-03-03"),
+    ROW("12345676K", "Jose", "Anchoas", "1979-03-03");

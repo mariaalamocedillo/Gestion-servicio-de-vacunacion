@@ -2,14 +2,16 @@
 // Initialize the session
 session_start();
 
-// Si ya está logeado con una sesión de paciente, redirigimos al inicio. Si es un empleado, cerramos sus sesión
-if(isset($_SESSION["DNI"])){
-    header("location: inicio_pctes.php");
-    exit;
-} elseif (isset($_SESSION["num_identif"])){
-    session_unset();
-    session_destroy();
-    session_start();
+// Si ya está logeado con una sesión de paciente, redirigimos al inicio. Si es un empleado, cerramos su sesión
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+    if (isset($_SESSION["DNI"])) {
+        header("location: inicio_pctes.php");
+        exit;
+    } else if (isset($_SESSION["num_identif"])) {
+        session_unset();
+        session_destroy();
+        session_start();
+    }
 }
 
 // Include config file

@@ -1,8 +1,10 @@
 <?php
+// Include config file
+require_once "config/configuracion.php";
 // Initialize the session
 session_start();
 
-// Check if the user is already logged in, if yes then redirect him to welcome page
+// Si esté logeado como empleado, se redirige al inicio. Si es como paciente, se cierra sus sesión
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     if (isset($_SESSION["num_identif"])){
         header("location: inicio.php");
@@ -10,13 +12,9 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     } elseif (isset($_SESSION["DNI"])){
         session_unset();
         session_destroy();
-        header("location: inicio.php");
-        exit;
+        session_start();
     }
 }
-
-// Include config file
-require_once "config/configuracion.php";
 
 // Define variables and initialize with empty values
 $num_identif = $password = "";
@@ -61,7 +59,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     // Bind result variables
                     $fila = $result->fetch_assoc();
                     if(password_verify($password, $fila["passwd"])){
-                            // Password is correct, so start a new session
+                        // Password is correct, so start a new session
 
                         if(!isset($_SESSION)) {
                             session_start();
@@ -75,6 +73,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $_SESSION['expire'] = $_SESSION['start'] + (30 * 60); //por seguridad, las sesiones duran 30 min
                         // Redirect user to welcome page
                         header("location: inicio.php");
+                    }else{
+                        //contraseña incorrecta; no concretamos que es la contraseña por seguridad
+                        $password_err = "Número o contraseña inválidos.";
                     }
                 }else{
                     // Username doesn't exist, display a generic error message
@@ -137,13 +138,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                            placeholder="Codigo identificacion" autofocus>
                 <span class="invalid-feedback"><?php echo $num_identif_err; ?></span>
                 <span class="p-b-11 p-t-11">Contraseña</span>
-                    <input type="password" id="inputPassword" name="password"  class="form-control <?php echo (!empty($password)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>"
+                    <input type="password" id="inputPassword" name="password"  class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>"
                            placeholder="Password" >
                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
                 <div class="flex-sb-m w-full p-b-48">
-                        <a href="reset-password.php">
-                            Olvidé mi contraseña
-                        </a>
                         <a href="registro.php" style="float: right">
                             Crear una nueva cuenta
                         </a>

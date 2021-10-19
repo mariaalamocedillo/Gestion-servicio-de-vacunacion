@@ -2,8 +2,8 @@
 // Initialize the session
 session_start();
 
-//si no se ha identificado como paciente, le llevamos a identificacion
-if(!isset($_SESSION["DNI"])){
+// Si no está logeado como paciente, le enviamos a la página de identificación
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["DNI"])){
     header("location: identificacion.php");
     exit;
 }
@@ -127,7 +127,7 @@ $stmt -> close();
                         if ($sincita){
                             echo "No tiene ninguna cita pendiente";
                         } else{
-                            echo "Tiene una cita en el centro " . $row["centro_vacunacion"] . " para su " . $row["num_dosis"] . " dosis el día: " . $row["fecha"];
+                            echo "Tiene una cita en el centro " . $row["centro_vacunacion"] . " para su " . $row["num_dosis"] . "º dosis el día: " . $row["fecha"];
                         }
                         ?>
                 </div>

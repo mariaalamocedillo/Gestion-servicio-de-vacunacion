@@ -2,6 +2,13 @@
 
 // Include config file
 require_once "config/configuracion.php";
+
+// Si no está logeado como empleado, lo llevamos a la página de login.
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
+    header("location: login.php");
+    exit;
+}
+
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
 $fabricante_err = $num_lote_err = "";
@@ -28,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         // Include config file
         require_once "config/configuracion.php";
 
-        // Recogemos los datos de la cita
+        // Recogemos los datos de la cita para usarlos posteriormente en el registro de vacunado
         $sql = "SELECT DNI, num_dosis, centro_vacunacion FROM citas WHERE id_cita = ?";
 
         if ($stmt = $mysqli->prepare($sql)) {
@@ -55,7 +62,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         // Close statement
         $stmt -> close();
 
-        //Ahora borramos el registro de dicha cita
+        //Ahora borramos el registro de dicha cita en la tabla de citados
         $sqldel = "DELETE FROM citas WHERE id_cita = ?";
 
         if ($stmt = $mysqli->prepare($sqldel)) {
@@ -77,11 +84,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         //Add the new row to the database
 
 
+        //Insertamos los datos en la tabla de registros de vacunados
+        $sqlins = "INSERT INTO registro_vacunados (DNI, num_dosis, fabricante, num_lote, centro_vacunacion) VALUES (?, ?, ?, ?, ?)";
 
         if(empty($fabricante_err) && empty($num_lote_err)){
             // Prepare an insert statement
-            $sqlins = "INSERT INTO registro_vacunados (DNI, num_dosis, fabricante, num_lote, centro_vacunacion) VALUES (?, ?, ?, ?, ?)";
-
             if($stmt = $mysqli->prepare($sqlins)){
                 // Bind variables to the prepared statement as parameters
                 $stmt->bind_param("sisis", $param_DNI, $param_numdosis, $param_fabricante,
@@ -104,8 +111,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "Oops! Algo fue mal. Inténtelo más tarde.";
                 }
             }
-
-
         }
     } else {
         // Check existence of id parameter
