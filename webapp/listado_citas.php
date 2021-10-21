@@ -33,25 +33,17 @@ require_once "config/configuracion.php";
     <script>
         //por defecto muestra todas las citas
         document.addEventListener("DOMContentLoaded", function event() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("tabla").innerHTML = this.responseText;
-                }
-            };
-            xmlhttp.open("GET","gettable.php?centros=all",true);
-            xmlhttp.send();
+            showCentro('all');
         });
+        //función que mostrará las citas de los centros disponibles, según el valor seleccionado
         function showCentro(str) {
-            if (str == "") {
+            if (str === "") {
                 document.getElementById("tabla").innerHTML = "";
                 return;
             } else {
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
                         document.getElementById("tabla").innerHTML = this.responseText;
-                    }
                 };
                 xmlhttp.open("GET","gettable.php?centros="+str,true);
                 xmlhttp.send();
@@ -62,7 +54,7 @@ require_once "config/configuracion.php";
 <body>
 <!--barra de navegación-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-    <img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70">
+    <img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70" alt="">
             <div class="nav-item">
                 <a class="nav-link" href="inicio.php">Inicio</a>
             </div>

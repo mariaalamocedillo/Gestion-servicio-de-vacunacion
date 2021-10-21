@@ -3,7 +3,7 @@
 session_start();
 
 // Si está logeado con cualquier tipo de cuenta, se redirige a la página de inicio correspondiente
-if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true){
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true){
     if(isset($_SESSION["DNI"])){
         header("location: inicio_pctes.php"); //es un paciente
         exit;

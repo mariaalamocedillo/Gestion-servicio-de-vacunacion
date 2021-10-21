@@ -1,4 +1,6 @@
 <?php
+// Include config file
+require_once "config/configuracion.php";
 // Initialize the session
 session_start();
 
@@ -9,16 +11,31 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 
 
-// Include config file
-require_once "config/configuracion.php";
-
 // Define variables and initialize with empty values
 $num_dosis = $centro_vacunacion = $fecha = $dia_cita = $rango = "";
 $num_dosis_err = $centro_vacunacion_err = $fecha_err
     = $dia_cita_err = $rango_err = $vacunacion_err = "";
 
+//Comprobamos que no tenga ninguna cita activa
+$sql = "SELECT * FROM citas WHERE DNI = '".$_SESSION["DNI"]."'";
+if($stmt = $mysqli->prepare($sql)) {
+    if ($stmt->execute()) {
+        // store result
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $vacunacion_err = "No puede solicitar otra cita porque ya tiene una activa; acceda al <a href='inicio_pctes.php'> inicio </a> para más información";
+        }
+    } else {
+        echo "Oops! Algo salió mal. Inténtelo de nuevo más tarde.";
+    }
+}
+// Close statement
+$stmt->close();
+
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+
 
     //Validamos el centro
     if (trim($_POST["centro"]) == "0") {
@@ -87,7 +104,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
     // Check input errors before inserting in database
-    if(empty($centro_vacunacion_err) && empty($fecha_err)) {
+    if(empty($centro_vacunacion_err) && empty($fecha_err) && empty($vacunacion_err)) {
 
         // Prepare an insert statement
         $sql = "INSERT INTO citas (DNI, num_dosis, centro_vacunacion, fecha) VALUES (?, ?, ?, ?)";
@@ -127,14 +144,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <style>
         body{ font: 14px sans-serif; }
     </style>
-    <script type="text/javascript">
-        $(".form_datetime").datetimepicker({
-            format: "yyyy-MM-dd - hh:ii",
-            autoclose: true,
-            todayBtn: true,
-            minuteStep: 10
-        });
-    </script>
+
 </head>
 <body class="bg-light">
 
@@ -164,7 +174,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                         custom-select d-block w-100" id="centro" name="centro" required="">
                         <option value="0">Seleccione...</option>
                         <?php
-                        $sql = "SELECT * FROM centros";
+                        $sql = "SELECT * FROM centros WHERE vacunacion = 1";
                         if($result = $mysqli->query($sql)){
                             if($result->num_rows > 0){
                                 while($row = $result->fetch_array()){
@@ -191,7 +201,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 </div>
 
                 <div class="col-md mb-3">
-                    <label for="">Rango de horario</label>
+                    <label for="rango">Rango de horario</label>
                     <select class="form-control <?php echo (!empty($rango_err)) ? 'is-invalid' : ''; ?>
                                     custom-select d-block w-100" id="rango" name="rango" required="">
                         <option value="vacio">Seleccione...</option>
@@ -208,10 +218,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </a>
                 </div>
 
-                <div class="form-group text-center">
-                    <input type="submit" class="btn btn-primary" value="Siguiente">
+                <span><?php echo $vacunacion_err ;?></span>
+                <div class="form-group text-center mt-1">
+                    <input type="submit" class="btn btn-primary" value="Confirmar" <?php if(!empty($vacunacion_err)) echo "disabled";?>>
                     <input type="reset" class="btn btn-secondary ml-2" value="Vaciar datos">
-                    <span class="invalid-feedback"><?php echo $vacunacion_err ;?></span>
                 </div>
         </form>
 

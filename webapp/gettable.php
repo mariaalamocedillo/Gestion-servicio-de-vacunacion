@@ -3,7 +3,6 @@ require_once "config/configuracion.php";
 //cambiamos los guiones por espacios, y almacenamos el centro o localidad
 $centro = str_replace("-", " ", $_GET['centros']);
 
-
 if (!$mysqli) {
     die('Could not connect: ' . mysqli_error($mysqli));
 }

@@ -3,18 +3,17 @@
 // Include config file
 require_once "config/configuracion.php";
 
-// Si no está logeado como empleado, lo llevamos a la página de login.
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
-    header("location: login.php");
-    exit;
-}
-
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
 $fabricante_err = $num_lote_err = "";
 
+// Comprobamos que existe un id
+if (!isset($_GET["id"])) {
+    // Si no contiene un id, redirigimos a la página de error, pues no se puede confirmar dicha cita
+    header("location: error.php");
+    exit();
+}
 
-// Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     //Validar fabricante
     if(empty(trim($_POST["fabricante"]))){
@@ -112,13 +111,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         }
-    } else {
-        // Check existence of id parameter
-        if (empty(trim($_GET["id"]))) {
-            // URL doesn't contain id parameter. Redirect to error page
-            header("location: error.php");
-            exit();
-        }
     }
 }
 ?>
@@ -144,7 +136,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-md-12">
                     <h2 class="mt-5 mb-3">Confirmar cita</h2>
                     <form action="<?php echo htmlspecialchars($_SERVER["SCRIPT_NAME"]); ?>" method="post">
-                        <input type="hidden" name="id" value="<?php echo trim($_GET["id"]); ?>"/>
+                        <input type="hidden" name="id" value="<?php echo trim($_GET["id"]);?>"/>
                         <p>Para confirmar la vacunación, introduzca los siguientes datos:</p>
                         <div>
                             <label>Número de lote</label>
@@ -160,7 +152,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             if ($result = $mysqli->query($sql)) {
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_array()) {
-                                        echo "<option value='" .$row["facbricante"]. "'> " . $row["fabricante"] . "</option>";
+                                        echo "<option value='" .$row["fabricante"]. "'> " . $row["fabricante"] . "</option>";
                                     }
                                 }
                                 // Free result set

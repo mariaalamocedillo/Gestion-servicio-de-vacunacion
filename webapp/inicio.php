@@ -2,7 +2,6 @@
 // Initialize the session
 session_start();
 require_once "config/configuracion.php";
-$centro_err = "";
 
 // Si no está logeado como empleado, lo llevamos a la página de login.
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
@@ -42,18 +41,17 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <script>
+        //función para guardar el centro de trabajo
         function guardar(){
             var str = document.getElementById("input_searchbox").value;
 
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("centro_error").innerHTML = this.responseText;
-                }
-            };
+            xmlhttp.onload = function() {
+                document.getElementById("result").innerHTML = this.responseText;
+            }
             xmlhttp.open("GET","confirm-backend.php?centros="+str,true);
             xmlhttp.send();
-        };
+        }
         $(document).ready(function(){
             $('.search-box input[type="text"]').on("keyup input", function(){
                 // Get input value on change
@@ -85,7 +83,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
     <div class="container d-flex justify-content-between align-items-center">
 
         <div class="logo">
-            <a href="inicio.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70"></a>
+            <a href="inicio.php"><img class="d-block mb-4 justify-content-center mt-auto mb-auto" src="css/SaludMadrid.svg" width="70" alt=""></a>
         </div>
         <div class="botones">
             <a href="logout.php">Salir</a>
@@ -105,12 +103,16 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
                         <div class="carousel-content">
                             <h2 class="animate__animated animate__fadeInDown">Bienvenido al portal de <br> gestión de <span>vacunación COVID-19</span></h2>
                             <p class="animate__animated animate__fadeInUp">Este portal está orientado a la gestión de las citas de vacunación contra el coronavirus. El uso de este portal es exclusivo para sanitarios. Podrán ver información de los suministros de las vacunasa, las citas de cada centro y el registro de los pacientes con el número de dosis que se les ha aplicado.</p>
-                            <p class="animate__animated animate__fadeInUp">Introduzca su centro de trabajo: </p>
-                                <div class="search-box">
+                                <div class="search-box animate__animated animate__fadeInUp">
+                                    <label for="input_searchbox">Introduzca su centro de trabajo: </label>
                                     <input class="form-control" name="centro_trab" id="input_searchbox"
-                                           type="text" autocomplete="off" placeholder="Buscar centro..." />
-                                    <div class="result"></div>
-                                    <span class="invalid-feedback" id="centro_error"></span>
+                                                 type="text" autocomplete="off" placeholder="Establecer centro..."/>
+                                    <div class="result"><?php
+                                        if (isset($_COOKIE["centro_trab"]))
+                                            echo "Su centro de trabajo es " . $_COOKIE["centro_trab"];
+                                        else if (isset($_COOKIE["localidad_trab"]))
+                                            echo "Su localidad de trabajo es " . $_COOKIE["localidad_trab"];
+                                        ?></div>
                                 </div>
                                 <input type="submit" class="btn btn-primary btn-get-started" value="Confirmar" onclick="guardar()">
                         </div>

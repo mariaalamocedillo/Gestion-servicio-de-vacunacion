@@ -3,11 +3,10 @@
 require_once "config/configuracion.php";
 
 
-    //eliminamos cuaquier cookie que pueda estar aún abierta para escribir otra
-    setcookie("centro_trab",null, time() - (3600));
-    setcookie("localidad_trab",null, time() - (3600));
-
-    $param_centro = str_replace("-", " ", $_GET['centros']);
+//eliminamos cuaquier cookie que pueda estar aún abierta para escribir otra
+setcookie("centro_trab",null, time() - (3600));
+setcookie("localidad_trab",null, time() - (3600));
+$param_centro = str_replace("-", " ", $_GET['centros']);
 
 
 $sql = "SELECT * FROM centros WHERE nombre = '" . $param_centro . "'";
@@ -21,15 +20,16 @@ $sql = "SELECT * FROM centros WHERE nombre = '" . $param_centro . "'";
                 //si es centro de vacunación, guardaremos el nombre, en caso de que no lo sea, guardamos la localidad
                 if ($row["vacunacion"] == 1) {
                     setcookie("centro_trab", str_replace(" ", "-", $row["nombre"]), time() + (60 * 60), "/");
+                    echo "Centro de trabajo almacenado; " . $row["nombre"];
                 } else {
                     setcookie("localidad_trab", str_replace(" ", "-", $row["localidad"]), time() + (60 * 60), "/");
+                    echo "Localidad de trabajo almacenado; " . $row["localidad"];
                 }
+
             } else {
                 echo "No se encontró dicho centro de trabajo";
             }
         }
-
-
     }
 
     // Close statement

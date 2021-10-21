@@ -41,10 +41,10 @@ CREATE TABLE centros (
     vacunacion BOOLEAN NOT NULL
 );
 
--- Crear tabla con las citas de vacunación
+-- Crear tabla con las citas de vacunación. El DNI será único porque solo se podrá tener una cita activa por paciente (una vez se le vacuna, se elimina ese registro)
 CREATE TABLE citas (
     id_cita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    DNI CHAR(9) NOT NULL,
+    DNI CHAR(9) NOT NULL UNIQUE,
     num_dosis INT(10) NOT NULL,
     centro_vacunacion VARCHAR(255) NOT NULL,
     fecha DATETIME NOT NULL,
@@ -62,6 +62,7 @@ CREATE TABLE registro_vacunados (
     centro_vacunacion VARCHAR(255) NOT NULL,
     fecha_vacunacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
+    FOREIGN KEY (fabricante) REFERENCES vacuna(fabricante),
     FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
