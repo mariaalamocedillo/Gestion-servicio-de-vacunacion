@@ -7,12 +7,6 @@ require_once "config/configuracion.php";
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
 $fabricante_err = $num_lote_err = "";
 
-// Comprobamos que existe un id
-if (!isset($_GET["id"])) {
-    // Si no contiene un id, redirigimos a la página de error, pues no se puede confirmar dicha cita
-    header("location: error.php");
-    exit();
-}
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     //Validar fabricante

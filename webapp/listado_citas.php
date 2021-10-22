@@ -45,7 +45,7 @@ require_once "config/configuracion.php";
                 xmlhttp.onreadystatechange = function() {
                         document.getElementById("tabla").innerHTML = this.responseText;
                 };
-                xmlhttp.open("GET","gettable.php?centros="+str,true);
+                xmlhttp.open("GET","gettable-backend.php?centros="+str,true);
                 xmlhttp.send();
             }
         }
@@ -89,13 +89,15 @@ require_once "config/configuracion.php";
                         $sql = "SELECT * FROM centros WHERE nombre NOT LIKE '" . $centro_trabajo . "' AND vacunacion = 1";
 
                         //mostramos primero su centro de trabajo y luego el resto de centros (en valor necesitamos que esté separado por guiones, por eso reusamos la cookie)
-                        echo "<option value=" . $_COOKIE["centro_trab"] . ">Mi centro (" . $centro_trabajo . ")";
+                        echo "<option value=" . $_COOKIE["centro_trab"] . ">Mi centro (" . $centro_trabajo . ")</option>";
 
                     } elseif (isset($_COOKIE["localidad_trab"])){
                         $localidad = str_replace("-", " ", $_COOKIE["localidad_trab"]);
 
                         //creamos un comando sql que mostrará los de la localidad
                         $sql = "SELECT * FROM centros WHERE localidad LIKE '" . $localidad . "' AND vacunacion = 1";
+                    } else{
+                        $sql = "SELECT * FROM centros WHERE vacunacion = 1";
                     }
                     if ($result = $mysqli->query($sql)) {
                         if ($result->num_rows > 0) {

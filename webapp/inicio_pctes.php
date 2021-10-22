@@ -157,7 +157,7 @@ $stmt -> close();
                                         echo "<div> Se le aplicó su " .$fila["num_dosis"]. "º dosis en el centro " .$fila["centro_vacunacion"]. ":";
                                         echo "<br>&nbsp;&nbsp; Fecha:" .$fila["fecha_vacunacion"];
                                         echo "<br>&nbsp;&nbsp; Num. lote: ".$fila["num_lote"];
-                                        echo "<br>&nbsp;&nbsp; Fabricante: ".$fila["fabricante"].".</div>" ;
+                                        echo "<br>&nbsp;&nbsp; Fabricante: ".$fila["fabricante"].".</div><br>" ;
                                     }
                                     if ($result->num_rows == 2){
                                         echo "\n---Ya se ha completado su vacunación---";

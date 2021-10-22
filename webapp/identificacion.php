@@ -59,7 +59,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // store result
                 $result = $stmt->get_result();
                 //si se encuentra registros sobre dicho paciente, le redirigimos a la siguiente página creando una sesión
-                if($result->num_rows == 1){
+                if($result->num_rows > 0){
                     // Bind result variables
                     $fila = $result->fetch_assoc();
 
@@ -149,11 +149,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <span class="invalid-feedback"><?php echo $nacimiento_err; ?></span>
                 </div>
 
+                <div class="text-center"><?php echo $vacunacion_err ;?></div>
 
                 <div class="form-group text-center">
                     <input type="submit" class="btn btn-primary" value="Siguiente">
                     <input type="reset" class="btn btn-secondary ml-2" value="Vaciar formulario">
-                    <span class="invalid-feedback"><?php echo $vacunacion_err ;?></span>
                 </div>
             </form>
 

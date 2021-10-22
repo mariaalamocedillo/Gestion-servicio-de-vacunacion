@@ -74,6 +74,10 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                         <p><b><?php echo $row["nombre"]; ?></b></p>
                     </div>
                     <div class="form-group">
+                        <label>Nombre completo</label>
+                        <p><b><?php echo $row["nombre_largo"]; ?></b></p>
+                    </div>
+                    <div class="form-group">
                         <label>Fabricante</label>
                         <p><b><?php echo $row["fabricante"]; ?></b></p>
                     </div>
@@ -81,9 +85,13 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                         <label>Núm. dosis</label>
                         <p><b><?php echo $row["num_dosis"]; ?></b></p>
                     </div>
+                    <div class="form-group">
+                        <label>Intervalo entre dosis</label>
+                        <p><b>Entre <?php echo $row["tiempo_minimo"]; ?> y <?php echo $row["tiempo_maximo"]; ?> días</b></p>
+                    </div>
                     <p><a href="listado_vacunas.php" class="btn btn-primary">Volver</a></p>
                 </div>
-            </div>        
+            </div>
         </div>
     </div>
 </body>
