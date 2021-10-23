@@ -62,7 +62,6 @@ CREATE TABLE registro_vacunados (
     centro_vacunacion VARCHAR(255) NOT NULL,
     fecha_vacunacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (DNI) REFERENCES pacientes(DNI),
-    FOREIGN KEY (fabricante) REFERENCES vacuna(fabricante),
     FOREIGN KEY (centro_vacunacion) REFERENCES centros(nombre)
 );
 
