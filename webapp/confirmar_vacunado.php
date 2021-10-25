@@ -178,7 +178,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <div class="mt-2 text-center">
                             <input type="submit" value="Confirmar" class="btn btn-danger">
-                            <a href="listado_vacunas.php" class="btn btn-secondary ml-2">Cancelar</a>
+                            <a href="listado_citas.php" class="btn btn-secondary ml-2">Cancelar</a>
                         </div>
 
                     </form>

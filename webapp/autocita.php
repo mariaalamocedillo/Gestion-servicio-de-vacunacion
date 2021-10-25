@@ -88,9 +88,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $stmt->store_result();
 
             if ($stmt->num_rows >= 2) {
-                $vacunacion_err = "Su vacunación ya se ha completado";
-                header("location: inicio_pctes.php");
-                exit;
+                $vacunacion_err = "Su vacunación ya se ha completado <a href='inicio_pctes.php'>Volver al inicio</a>";
             } else {
                 //sumamos uno al número de dosis que se le ha aplicado
                 $num_dosis = $stmt->num_rows + 1;
