@@ -2,6 +2,7 @@
 session_start();
 // Include config file
 require_once "config/configuracion.php";
+header_remove();
 
 // Define variables and initialize with empty values
 $DNI = $num_dosis = $centro_vacunacion = $fabricante = $num_lote = "";
