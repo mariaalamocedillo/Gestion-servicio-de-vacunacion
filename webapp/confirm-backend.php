@@ -8,7 +8,7 @@ setcookie("centro_trab",null, time() - (3600));
 setcookie("localidad_trab",null, time() - (3600));
 $param_centro = str_replace("-", " ", $_GET['centros']);
 
-
+//confirmamos la existencia del centro y almacenamos una cookie con el centro o la localidad, segun sea centro de vacunación o no
 $sql = "SELECT * FROM centros WHERE nombre = '" . $param_centro . "'";
 
     if ($stmt = $mysqli->prepare($sql)) {
