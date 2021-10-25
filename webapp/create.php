@@ -1,7 +1,7 @@
 <?php
 // Include config file
 require_once "config/configuracion.php";
-
+session_start();
 // Si no está logeado como empleado, lo llevamos a la página de login.
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["num_identif"])){
     header("location: login.php");

@@ -11,6 +11,9 @@ $fabricante_err = $num_lote_err = $id_err = "";
 if(!isset($_COOKIE['id_cita'])){
     setcookie("id_cita", trim($_GET["id"]), time() + (60 * 5), "/");
 }
+if (isset($_GET["id"])){
+    setcookie("id_cita", trim($_GET["id"]), time() + (60 * 5), "/");
+}
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     //Validar fabricante
     if(!strcmp(trim($_POST["fabricante"]), "vacio")){
@@ -46,7 +49,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $result = $stmt->get_result();
                 $row = $result->fetch_assoc();
                 //asignamos los valores
-                if($result->num_rows == 1){
+                if($result->num_rows === 1){
                     $DNI = $row["DNI"];
                     $num_dosis = $row["num_dosis"];
                     $centro_vacunacion = $row["centro_vacunacion"];
@@ -64,10 +67,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt -> close();
 
 
-        //Insertamos los datos en la tabla de registros de vacunados
-        $sqlins = "INSERT INTO registro_vacunados (DNI, num_dosis, fabricante, num_lote, centro_vacunacion) VALUES (?, ?, ?, ?, ?)";
 
         if(empty($fabricante_err) && empty($num_lote_err) && empty($id_err)){
+
+            //Insertamos los datos en la tabla de registros de vacunados
+            $sqlins = "INSERT INTO registro_vacunados (DNI, num_dosis, fabricante, num_lote, centro_vacunacion) VALUES (?, ?, ?, ?, ?)";
             // Prepare an insert statement
             if($stmt = $mysqli->prepare($sqlins)){
                 // Bind variables to the prepared statement as parameters
