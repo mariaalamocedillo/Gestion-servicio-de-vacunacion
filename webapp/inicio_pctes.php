@@ -13,7 +13,7 @@ require_once "config/configuracion.php";
 
 $num_dosis = $centro_vacunacion = $fecha = "";
 $DNI = $_SESSION["DNI"];
-$sindosis = $sincita = false;
+$sincita = false;
 
 // Buscamos si tiene citas
 $sql = "SELECT num_dosis, centro_vacunacion, fecha FROM citas WHERE DNI = ?";
@@ -30,8 +30,8 @@ if ($stmt = $mysqli->prepare($sql)) {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
 
-        if($stmt->num_rows() == 0){
-            $sindosis = true;
+        if($result->num_rows == 0){
+            $sincita = true;
         } else {
             //asignamos los valores
             $num_dosis = $row["num_dosis"];
